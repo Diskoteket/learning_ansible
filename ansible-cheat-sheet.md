@@ -12,4 +12,8 @@ ansible all -m ping
 ```shell
 ansible all -m gather_facts
 ```
+If you want to limit your facts:
 
+```shell
+ansible all -m gather_facts --limit 192.168.122.101
+```
