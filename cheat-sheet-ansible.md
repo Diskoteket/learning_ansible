@@ -22,4 +22,11 @@ Assuming you have the same password for all servers:
 ```bash
 ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
-
+## Using "When"
+```yml
+ - name: do stuff when a specific distro and version is present
+   apt:
+     name: apache2
+     state: latest
+   when: ansible_distribution_version == "Ubuntu" and ansible_distribution_version == "20"
+```
