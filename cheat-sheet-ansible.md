@@ -1,4 +1,4 @@
-#Ad-hoc commands
+# Ad-hoc commands
 ## Check if ansible can reach all hosts in inventory
 ```bash
 ansible all --key-file ~/.ssh/ansible -i inventory -m ping
