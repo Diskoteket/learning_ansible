@@ -28,5 +28,5 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
    apt:
      name: apache2
      state: latest
-   when: ansible_distribution_version == "Ubuntu" and ansible_distribution_version == "20"
+   when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "20"
 ```
