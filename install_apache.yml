@@ -4,19 +4,30 @@
   become: true
   tasks:
 
-  - name: update repo index debian apt
+  - name: apt update repo index
     apt:
       update_cache: yes
     when: ansible_distribution in ["Ubuntu", "Debian"]
 
-  - name: install apache2 package apt
+  - name: apt install apache2 package
     apt:
       name: apache2
       state: latest
     when: ansible_distribution in ["Ubuntu", "Debian"]
 
-  - name: add php support for apache2 apt
+  - name: apt add php support for apache2
     apt:
       name: libapache2-mod-php
       state: latest
     when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: dnf update repo index
+    dnf:
+      update_cache: yes
+    when: ansible_distribution == "RedHat"
+
+  - name: dnf install apache stack
+    dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "RedHat"
