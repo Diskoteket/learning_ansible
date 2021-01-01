@@ -35,7 +35,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```yml
  - name: do stuff when there are a range of distros but they use the same package manager
    apt:
-    update_cache: yes
+     update_cache: yes
    when: ansible_distribution in ["Ubuntu", "Debian"]
 ```
 
