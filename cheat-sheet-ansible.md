@@ -22,6 +22,7 @@ Assuming you have the same password for all servers:
 ```bash
 ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
+# Playbook stuff
 ## Using "When"
 ```yml
  - name: do stuff when a specific distro and version is present
@@ -30,3 +31,11 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
      state: latest
    when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "20"
 ```
+
+```yml
+ - name: do stuff when there are a range of distros but they use the same package manager
+   apt:
+    update_cache: yes
+   when: ansible_distribution in ["Ubuntu", "Debian"]
+```
+
