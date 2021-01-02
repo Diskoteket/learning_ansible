@@ -2,8 +2,8 @@
 192.168.122.101
 192.168.122.104
 
-[db_servers]
+[file_servers]
 192.168.122.102
 
-[file_servers]
+[db_servers]
 192.168.122.103
