@@ -1,0 +1,58 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install updates (RHEL/CentOS))
+    dnf: 
+      update_cache: yes
+      update_only: yes
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: install updates (Debian/Ubuntu)
+    apt: 
+      update_cache: yes
+      upgrade: dist
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 and php packages (Debian/Ubuntu)
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: install apache and php packages (RHEL/CentOS)
+    dnf:
+      name: 
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: firewall rule for http (RHEL/CentOS)
+    ansible.posix.firewalld: 
+      service: http
+      zone: public
+      permanent: yes
+      state: enabled
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: reload firewalld (RHEL/CentOS)
+    systemd:
+      name: firewalld
+      state: reloaded
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: Start httpd service (RHEL/CentOS)
+    systemd:
+      name: httpd
+      state: started
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
