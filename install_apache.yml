@@ -4,6 +4,7 @@
   become: true
   tasks:
 
+<<<<<<< HEAD
   - name: install apache2 and php packages
     package:
       name: 
@@ -11,3 +12,32 @@
         - "{{ php_package }}"
       state: latest
       update_cache: yes
+=======
+  - name: apt update repo index
+    apt:
+      update_cache: yes
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: apt install apache2 package
+    apt:
+      name: apache2
+      state: latest
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: apt add php support for apache2
+    apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: dnf update repo index
+    dnf:
+      update_cache: yes
+    when: ansible_distribution == "RedHat"
+
+  - name: dnf install apache stack
+    dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "RedHat"
+>>>>>>> parent of fd1ea7c (added some lines to install/remove_apache.yml for RHEL and CentOS)
