@@ -52,7 +52,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 
 ```bash
-# inventory
+# inventory file
 
 # Ubuntu servers
 192.168.122.101 apache_package=apache2 php_package=libapache2-mod-php
@@ -61,4 +61,39 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 
 # RHEL server
 192.168.122.104 apache_package=httpd php_package=php
+```
+
+## Inventory groups
+``` bash
+# inventory file
+
+[web_servers]
+192.168.122.101
+192.168.122.104
+
+[file_servers]
+192.168.122.102
+
+[db_servers]
+192.168.122.10
+```
+
+```yml
+# provision_stuff.yml
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install mariadb package (RHEL/CentOS)
+    dnf:
+      name: mariadb
+      state: latest
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: install mariadb package (Debian/Ubuntu)
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 ```
