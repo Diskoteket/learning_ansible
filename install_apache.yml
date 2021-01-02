@@ -4,30 +4,55 @@
   become: true
   tasks:
 
+# Debian and Ubuntu
+
   - name: apt update repo index
     apt:
       update_cache: yes
-    when: ansible_distribution in ["Ubuntu", "Debian"]
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: apt install apache2 package
     apt:
       name: apache2
       state: latest
-    when: ansible_distribution in ["Ubuntu", "Debian"]
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
   - name: apt add php support for apache2
     apt:
       name: libapache2-mod-php
       state: latest
-    when: ansible_distribution in ["Ubuntu", "Debian"]
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+# RHEL and CentOS
 
   - name: dnf update repo index
     dnf:
       update_cache: yes
-    when: ansible_distribution == "RedHat"
+    when: ansible_distribution in ["RedHat", "CentOS"]
 
-  - name: dnf install apache stack
+  - name: dnf install httpd
     dnf:
       name: httpd
       state: latest
-    when: ansible_distribution == "RedHat"
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: RedHat open port for httpd service
+    ansible.posix.firewalld: 
+      service: http
+      zone: public
+      permanent: yes
+      state: enabled
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: start httpd service
+    systemd:
+      name: httpd
+      state: started
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: reload firewalld
+    systemd:
+      name: firewalld
+      state: reloaded
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
