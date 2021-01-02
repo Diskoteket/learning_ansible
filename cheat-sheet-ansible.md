@@ -36,6 +36,29 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
  - name: do stuff when there are a range of distros but they use the same package manager
    apt:
      update_cache: yes
-   when: ansible_distribution in ["Ubuntu", "Debian"]
+   when: ansible_distribution in ["Debian", "Ubuntu"]
+```
+## Variables first example
+```yml
+# install_apache.yml
+
+  - name: install apache2 and php packages
+    package:
+      name: 
+        - "{{ apache_package }}"
+        - "{{ php_package }}"
+      state: latest
+      update_cache: yes
 ```
 
+```bash
+# inventory
+
+# Ubuntu servers
+192.168.122.101 apache_package=apache2 php_package=libapache2-mod-php
+192.168.122.102 apache_package=apache2 php_package=libapache2-mod-php
+192.168.122.103 apache_package=apache2 php_package=libapache2-mod-php
+
+# RHEL server
+192.168.122.104 apache_package=httpd php_package=php
+```
