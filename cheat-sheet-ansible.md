@@ -6,7 +6,6 @@ ansible all --key-file ~/.ssh/ansible -i inventory -m ping
 
 ```bash
 # If you have created an inventory file
-
 ansible all -m ping
 ```
 
@@ -17,20 +16,19 @@ ansible all -m gather_facts
 
 ```bash
 # If you want to limit your facts to a specific machine
-
 ansible all -m gather_facts --limit 192.168.122.101
 ```
 
 ## Elevated ad-hoc commands
 ```bash
 # Assuming you have the same sudoer account/password for all servers
-
 ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 
 # Playbook stuff
 ## Using "When"
 ```yml
+# using_when.yml
 ---
 
 - hosts: all
@@ -45,6 +43,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 
 ```yml
+# do_stuff.yml
 ---
 
 - hosts: all
@@ -60,6 +59,10 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ## Variables first example
 ```yml
 # install_apache.yml
+---
+- hosts: all
+  become: true
+  tasks:
 
   - name: install apache2 and php packages
     package:
@@ -162,18 +165,34 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 
 ``` bash
 # listing the tags of a playbook
-
 ansible-playbook --list-tags prov_servers.yml
 ```
 
 ``` bash
 # run a playbook, targeting a single tag
-
 ansible-playbook --tags centos --ask-become-pass prov_servers.yml
 ```
 
 ``` bash
 # run a playbook, targeting multiple tags
-
 ansible-playbook --tags "db,centos" --ask-become-pass prov_servers.yml
 ```
+
+## Using the copy module
+```yml
+# copy_the_best_startpage_ever.yml
+---
+
+- hosts: webservers
+  become: true
+  tasks:
+
+  - name: copy default html file to webservers
+    tags: apache,apache2,httpd
+    copy: 
+      src: files/default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+

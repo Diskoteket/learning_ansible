@@ -60,6 +60,15 @@
       state: started
     when: ansible_distribution in ["RedHat", "CentOS"]
 
+  - name: copy default html file to webservers
+    tags: apache,apache2,httpd
+    copy: 
+      src: files/default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644 
+
 - hosts: db_servers
   become: true
   tasks:
