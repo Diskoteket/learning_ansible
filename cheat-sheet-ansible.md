@@ -3,8 +3,10 @@
 ```bash
 ansible all --key-file ~/.ssh/ansible -i inventory -m ping
 ```
-If you have created an inventory file:
+
 ```bash
+# If you have created an inventory file
+
 ansible all -m ping
 ```
 
@@ -12,19 +14,29 @@ ansible all -m ping
 ```bash
 ansible all -m gather_facts
 ```
-If you want to limit your facts:
+
 ```bash
+# If you want to limit your facts to a specific machine
+
 ansible all -m gather_facts --limit 192.168.122.101
 ```
 
 ## Elevated ad-hoc commands
-Assuming you have the same password for all servers:
 ```bash
+# Assuming you have the same sudoer account/password for all servers
+
 ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
+
 # Playbook stuff
 ## Using "When"
 ```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+
  - name: do stuff when a specific distro and version is present
    apt:
      name: apache2
@@ -33,11 +45,18 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 
 ```yml
+---
+
+- hosts: all
+  become: true
+  tasks:
+
  - name: do stuff when there are a range of distros but they use the same package manager
    apt:
      update_cache: yes
    when: ansible_distribution in ["Debian", "Ubuntu"]
 ```
+
 ## Variables first example
 ```yml
 # install_apache.yml
@@ -80,6 +99,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 
 ```yml
 # provision_stuff.yml
+---
 
 - hosts: db_servers
   become: true
@@ -99,6 +119,47 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 
 ## Tags
+```yml
+# provision_stuff.yml
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (RHEL/CentOS)
+    tags: always
+    dnf: 
+      update_cache: yes
+      update_only: yes
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: install updates (Debian/Ubuntu)
+    tags: always
+    apt: 
+      update_cache: yes
+      upgrade: dist
+    when: ansible_distribution in ["Debian", "Ubuntu"]  
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install mariadb package (RHEL/CentOS)
+    tags: db,mariadb,rhel,centos
+    dnf:
+      name: mariadb
+      state: latest
+    when: ansible_distribution in ["RedHat", "CentOS"]
+
+  - name: install mariadb package (Debian/Ubuntu)
+    tags: db,mariadb,rhel,centos
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+```
+
 ``` bash
 # listing the tags of a playbook
 
@@ -114,5 +175,5 @@ ansible-playbook --tags centos --ask-become-pass prov_servers.yml
 ``` bash
 # run a playbook, targeting multiple tags
 
-ansible-playbook --tags "apache,db" --ask-become-pass prov_servers.yml
+ansible-playbook --tags "db,centos" --ask-become-pass prov_servers.yml
 ```
