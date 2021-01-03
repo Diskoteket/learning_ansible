@@ -97,3 +97,21 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
       state: latest
     when: ansible_distribution in ["Debian", "Ubuntu"]
 ```
+
+``` bash
+# listing the tags of a playbook
+
+ansible-playbook --list-tags prov_servers.yml
+```
+
+``` bash
+# run a playbook, targeting a single tag
+
+ansible-playbook --tags centos --ask-become-pass prov_servers.yml
+```
+
+``` bash
+# run a playbook, targeting multiple tags
+
+ansible-playbook --tags "apache,db" --ask-become-pass prov_servers.yml
+```
