@@ -98,6 +98,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
     when: ansible_distribution in ["Debian", "Ubuntu"]
 ```
 
+## Tags
 ``` bash
 # listing the tags of a playbook
 
