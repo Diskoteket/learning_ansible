@@ -178,7 +178,7 @@ ansible-playbook --tags centos --ask-become-pass prov_servers.yml
 ansible-playbook --tags "db,centos" --ask-become-pass prov_servers.yml
 ```
 
-## Using the copy module
+## Using the Copy module
 ```yml
 # copy_the_best_startpage_ever.yml
 ---
